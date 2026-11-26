@@ -10,14 +10,17 @@
   /* ---------- 作品（全部為真實作品；清單見 media-library/gallery.json） ---------- */
   // [id, 英文, 中文, 寬, 高, 分類]
   const works = [
+    ['return-01', '白髮共存', '11 月灰棕回訪・髮色細節', 1212, 2160, 'gray'],
     ['edit-5', '長髮', '直髮輪廓', 795, 1280, 'long'],
     ['warm-5', '長髮', '暖棕波浪・側面層次', 720, 1280, 'long'],
+    ['return-02', '白髮共存', '同次回訪・另一角度', 1236, 2160, 'gray'],
     ['gray-4', '白髮共存', '白髮共存・側面輪廓', 1033, 1280, 'gray'],
     ['edit-10', '短髮', '中短髮層次', 720, 1280, 'short'],
     ['cool-2', '長髮', '冷棕長髮・完整背面', 720, 1280, 'long'],
     ['edit-9', '短髮', '柔和灰紫', 778, 1280, 'short'],
     ['warm-4', '長髮', '暖棕波浪・轉身的光澤', 720, 1280, 'long'],
     ['edit-4', '短髮', '短髮亮線', 720, 1280, 'short'],
+    ['return-03', '白髮共存', '同次回訪・內層深淺', 1226, 2160, 'gray'],
     ['gray-3', '白髮共存', '白髮共存・線條分布', 837, 1280, 'gray'],
     ['cool-1', '長髮', '冷棕長髮・波浪中的亮線', 720, 1280, 'long'],
     ['edit-3', '短髮', '短髮線條', 720, 1280, 'short'],
@@ -30,8 +33,8 @@
     ['edit-1', '長髮', '綁髮內層線條・多角度', 960, 1280, 'long']
   ].map(([id, en, zh, w, h, cat]) => ({ id, en, zh, w, h, cat }));
   const byId = Object.fromEntries(works.map((w) => [w.id, w]));
-  const big = (w) => `assets/${w.id}.webp`;
-  const thumb = (w) => `assets/thumbs/${w.id}.webp`;
+  const big = (w) => `assets/${w.id}.${w.id.startsWith('return-') ? 'jpg' : 'webp'}`;
+  const thumb = (w) => w.id.startsWith('return-') ? big(w) : `assets/thumbs/${w.id}.webp`;
   const imgTag = (w, cls = '') => `<img${cls ? ` class="${cls}"` : ''} src="${thumb(w)}" alt="${w.zh}（COOPER 真實作品）" width="${w.w}" height="${w.h}" loading="lazy" decoding="async">`;
 
   /* ---------- 小工具 ---------- */
@@ -72,13 +75,13 @@
 
   /* ---------- TOP STORIES ---------- */
   const stories = [
-    { kicker: '客製刷染', title: '怕刷染線條，像畫上去？', img: 'edit-3', filter: 'all',
+    { kicker: '客製刷染', title: '刷染，會不會一條一條很明顯？', img: 'edit-3', filter: 'all',
       body: ['很多人怕刷染完，線條像一條一條畫上去，分界很硬，跟髮型分開。', '我會先看你的層次與髮量，再安排線條的位置和深淺，讓顏色自然融進髮型。長髮、短髮的線條，各自設計。', '也會一起考慮頭髮留長之後的銜接。'] },
-    { kicker: '白髮共存', title: '白髮，可以是設計的一部分', img: 'gray-4', filter: 'gray',
+    { kicker: '白髮共存', title: '有白髮，可以染得自然一點嗎？', img: 'gray-4', filter: 'gray',
       body: ['一位我服務過多次的客人，白髮越來越明顯。這次依她頭頂、分線與鬢角的白髮分布安排線條，讓白髮融進深淺之間。', '新生髮的銜接也放進設計裡。照片是本次完成的樣子，之後仍會依生長與退色安排維護，不是做一次就永遠不用再染。'] },
-    { kicker: '留長之後', title: '留長之後，也想好了', img: 'warm-5', filter: 'long',
-      body: ['好看不只是今天走出店門的那一刻。', '線條跟著層次與波浪延伸，設計時就把頭髮留長後的銜接一起考慮，讓髮色隨著時間依然自然。'] },
-    { kicker: '髮色', title: '好看的髮色，也要像你', img: 'edit-9', filter: 'all',
+    { kicker: '真實回訪', title: '想少補染，可以隔多久再整理？', img: 'return-02', filter: 'gray',
+      body: ['這位客人隔了四個月回來，照片是這次整理完成的樣子。', '這次沒有再漂，不代表她從來沒漂過，也不代表每個人第一次做都不用漂。', '我會看白髮分布、過去染髮紀錄和目前髮況，再一起討論維護方式。四個月是這位客人的回訪間隔，不能直接套用在每個人身上。'] },
+    { kicker: '髮色', title: '不想做刷染，還有什麼選擇？', img: 'edit-9', filter: 'all',
       body: ['從你喜歡的明暗、現在的底色、膚色與穿搭日常一起討論，先確認你能接受的改變，再決定方向。', '不一定要做線條，單色染也能有好看的光澤與一致的質感。'] }
   ];
   const storyList = $('#storyList');
@@ -87,7 +90,7 @@
     const w = byId[s.img];
     const b = document.createElement('button');
     b.type = 'button'; b.className = 'story reveal';
-    b.innerHTML = `${imgTag(w)}<div><p class="kicker">${s.kicker}</p><h3>${s.title}</h3><p class="byline">文／COOPER</p><span class="read">閱讀全文 →</span></div>`;
+    b.innerHTML = `${imgTag(w)}<div><p class="kicker">${s.kicker}</p><h3>${s.title}</h3><p class="story-summary">${s.body[0]}</p><span class="read">點開看解答</span></div>`;
     b.addEventListener('click', () => {
       activeStory = s;
       $('#artKicker').textContent = s.kicker;
@@ -118,7 +121,8 @@
   const dots = $$('.dot');
   function showSpot(i) {
     si = (i + spots.length) % spots.length;
-    dots.forEach((d, n) => d.setAttribute('aria-pressed', n === si));
+    dots.forEach((d, n) => { d.setAttribute('aria-pressed', n === si); d.setAttribute('aria-label', `${n + 1} ${spots[n][0]}`); });
+    $$('[data-spot-tab]').forEach((b, n) => b.setAttribute('aria-pressed', n === si));
     $('#spotNo').textContent = `${pad(si + 1)} / ${pad(spots.length)}`;
     $('#spotTitle').textContent = spots[si][0];
     $('#spotText').textContent = spots[si][1];
@@ -126,6 +130,7 @@
     p.classList.remove('fade-in'); void p.offsetWidth; p.classList.add('fade-in');
   }
   dots.forEach((d, i) => d.addEventListener('click', () => showSpot(i)));
+  $$('[data-spot-tab]').forEach((b, i) => b.addEventListener('click', () => showSpot(i)));
   $('#spotPrev').addEventListener('click', () => showSpot(si - 1));
   $('#spotNext').addEventListener('click', () => showSpot(si + 1));
   showSpot(0);
@@ -148,15 +153,20 @@
     damage: '你在意髮質：會先了解染、燙、漂的紀錄，說明可行的亮度與做法，再一起決定這次做到哪裡。',
     care: '你在意整理：會考慮你每天願意花多少時間，讓設計回到日常也好整理。'
   };
-  const picks = { gray: ['gray-4', 'gray-5'], short: ['edit-3', 'edit-10'], medium: ['edit-5', 'edit-10'], long: ['warm-5', 'cool-1'] };
+  const picks = { gray: ['return-01', 'return-03'], short: ['edit-3', 'edit-10'], medium: ['edit-5', 'edit-10'], long: ['warm-5', 'cool-1'] };
   const ans = {};
   let step = 0;
+  let advancing = false;
   const stage = $('#matchStage');
   function renderQ() {
+    advancing = false;
     $('#matchBar').style.width = `${(step / qs.length) * 100}%`;
     const q = qs[step];
-    stage.innerHTML = `<div class="fade-in"><p class="q-step">第 ${step + 1} 題／共 ${qs.length} 題</p><h3 class="q-title">${q.q}</h3><div class="opts">${q.opts.map(([v, t, en]) => `<button type="button" class="opt${ans[q.key] === v ? ' picked' : ''}" data-v="${v}"><span>${t}</span>${en ? `<small>${en}</small>` : '<small>→</small>'}</button>`).join('')}</div>${step ? '<button type="button" class="q-back">← 上一題</button>' : ''}</div>`;
+    stage.innerHTML = `<div class="fade-in"><p class="q-step">第 ${step + 1} 題／共 ${qs.length} 題</p><h3 class="q-title">${q.q}</h3><div class="opts">${q.opts.map(([v, t, en]) => `<button type="button" class="opt${ans[q.key] === v ? ' picked' : ''}" data-v="${v}"><span>${t}</span>${en ? `<small>${en}</small>` : '<small>選這個</small>'}</button>`).join('')}</div>${step ? '<button type="button" class="q-back">上一題</button>' : ''}</div>`;
     stage.querySelectorAll('.opt').forEach((b) => b.addEventListener('click', () => {
+      if (advancing) return;
+      advancing = true;
+      stage.querySelectorAll('.opt, .q-back').forEach((el) => { el.disabled = true; });
       ans[q.key] = b.dataset.v;
       b.classList.add('picked');
       setTimeout(() => { step += 1; step < qs.length ? renderQ() : renderResult(); }, reduced() ? 0 : 220);
@@ -166,15 +176,17 @@
   }
   function label(key, v) { return qs.find((q) => q.key === key).opts.find((o) => o[0] === v)[1]; }
   function renderResult() {
+    advancing = false;
     $('#matchBar').style.width = '100%';
     const s = services[ans.feel];
     const ids = ans.feel === 'gray' ? picks.gray : picks[ans.len];
     const msg = `COOPER 你好，我在網站做了配對：頭髮${label('len', ans.len)}，想要「${label('feel', ans.feel)}」，最擔心「${label('worry', ans.worry)}」。結果是「${s.name}」，想預約諮詢。`;
-    stage.innerHTML = `<div class="result fade-in"><p class="kicker">你的配對結果</p><h3>${s.name}</h3><p class="en">${s.en}</p><p>${s.text}</p><p style="margin-top:10px">${worries[ans.worry]}</p>
-      <div class="result-works">${ids.map((id) => `<button type="button" data-id="${id}">${imgTag(byId[id])}<span>${byId[id].zh}</span></button>`).join('')}</div>
-      <p class="fine" style="color:#999;margin-bottom:14px">配對只是方向參考，實際做法會在看過你的髮況後討論。作品為不同客人的真實作品。</p>
-      <div class="result-actions"><a class="btn btn-white" id="matchSend" href="${LINE}" target="_blank" rel="noopener">複製結果，LINE 預約</a><button type="button" class="btn btn-ghost" id="matchAgain">重新配對</button></div></div>`;
-    stage.querySelectorAll('.result-works button').forEach((b) => b.addEventListener('click', (e) => openLightbox(works.indexOf(byId[b.dataset.id]), e.currentTarget, works)));
+    stage.innerHTML = `<div class="result fade-in"><p class="kicker">可以一起討論的方向</p><h3>${s.name}</h3><p class="en">${s.en}</p><p>${s.text}</p><p style="margin-top:10px">${worries[ans.worry]}</p>
+      <div class="result-works">${ids.map((id) => `<button type="button" data-id="${id}" aria-label="看完整照片：${byId[id].zh}">${imgTag(byId[id])}<span class="result-view">看完整照片</span><span>${byId[id].zh}</span></button>`).join('')}</div>
+      <p class="fine" style="color:#999;margin-bottom:14px">配對只是方向參考，實際做法會在看過你的髮況後討論。${ans.feel === 'gray' ? '照片為同次回訪的不同角度，皆為本次整理完成。' : ans.feel === 'colour' ? '以下照片只供長度與輪廓參考，並非單色染案例；髮色會另外討論。' : '真實作品，供風格參考。'}</p>
+      <p class="fine" style="margin-bottom:16px">按下按鈕會複製結果並開啟 LINE。在對話貼上後，由你決定是否送出。</p>
+      <div class="result-actions"><a class="btn btn-white" id="matchSend" href="${LINE}" target="_blank" rel="noopener">複製結果並開啟 LINE</a><button type="button" class="btn btn-ghost" id="matchAgain">重新配對</button></div></div>`;
+    stage.querySelectorAll('.result-works button').forEach((b) => b.addEventListener('click', (e) => openLightbox(ids.indexOf(b.dataset.id), e.currentTarget, ids.map((id) => byId[id]))));
     $('#matchSend').addEventListener('click', () => copy(msg));
     $('#matchAgain').addEventListener('click', () => { step = 0; Object.keys(ans).forEach((k) => delete ans[k]); renderQ(); });
   }
@@ -189,14 +201,14 @@
     saved = isSaved(id) ? saved.filter((x) => x !== id) : [...saved, id];
     persist();
     if (btn) { btn.classList.remove('pop'); void btn.offsetWidth; btn.classList.add('pop'); }
-    if (isSaved(id)) toast(`已收藏「${byId[id].zh}」`);
+    if (isSaved(id)) toast(`已收藏 ${saved.length} 款。可繼續挑，或點「查看收藏」聊預約。`);
     syncSaved();
   }
   function syncSaved() {
     $$('[data-save]').forEach((b) => {
       const on = isSaved(b.dataset.save);
       b.setAttribute('aria-pressed', on);
-      b.textContent = on ? '♥' : '♡';
+      b.innerHTML = `<span aria-hidden="true">${on ? '♥' : '♡'}</span> ${on ? '已收藏' : '收藏這款'}`;
       b.setAttribute('aria-label', `${on ? '取消收藏' : '收藏'}：${byId[b.dataset.save].zh}`);
     });
     $('#savedCount').textContent = saved.length;
@@ -227,23 +239,33 @@
   });
   const rail = $('#rail');
   let list = works;
+  let expandedWorks = false;
   function setFilter(k) {
+    expandedWorks = false;
     list = k === 'all' ? works : works.filter((w) => w.cat === k);
     chipBtns.forEach((b) => b.setAttribute('aria-pressed', b.dataset.k === k));
     rail.replaceChildren(...list.map((w, i) => {
       const li = document.createElement('li');
       li.className = 'card';
-      li.innerHTML = `<button type="button" class="card-img" aria-label="看完整照片：${w.zh}">${imgTag(w)}</button><div class="card-meta"><div><p class="kicker">${w.en}</p><p>${w.zh}</p></div><button type="button" class="heart" data-save="${w.id}" aria-pressed="false">♡</button></div>`;
+      li.hidden = i >= 6;
+      li.innerHTML = `<button type="button" class="card-img" aria-label="看完整照片：${w.zh}">${imgTag(w)}<span class="view-work">看完整照片</span></button><div class="card-meta"><div><p class="kicker">${w.en}</p><p>${w.zh}</p></div><button type="button" class="heart" data-save="${w.id}" aria-pressed="false">♡ 收藏這款</button></div>`;
       li.querySelector('.card-img').addEventListener('click', (e) => openLightbox(i, e.currentTarget, list));
       li.querySelector('.heart').addEventListener('click', (e) => toggleSave(w.id, e.currentTarget));
       return li;
     }));
     rail.scrollLeft = 0;
+    $('#showMoreWorks').hidden = list.length <= 6;
+    $('#showMoreWorks').textContent = `看更多作品（還有 ${Math.max(0, list.length - 6)} 張）`;
     syncSaved();
   }
-  const railStep = (d) => rail.scrollBy({ left: d * rail.clientWidth * 0.8, behavior: reduced() ? 'auto' : 'smooth' });
-  $('#railPrev').addEventListener('click', () => railStep(-1));
-  $('#railNext').addEventListener('click', () => railStep(1));
+  $('#showMoreWorks').addEventListener('click', () => {
+    if (expandedWorks) return;
+    expandedWorks = true;
+    const next = rail.children[6];
+    Array.from(rail.children).forEach((el) => { el.hidden = false; });
+    $('#showMoreWorks').hidden = true;
+    if (next) { next.querySelector('button').focus({ preventScroll: true }); next.scrollIntoView({ block: 'start', behavior: reduced() ? 'auto' : 'smooth' }); }
+  });
 
   /* ---------- 全螢幕照片 ---------- */
   const lightbox = $('#lightbox');
@@ -306,8 +328,11 @@
     return li;
   }));
 
+  $('#quotePrev').addEventListener('click', () => $('#quoteRail').scrollBy({ left: -$('#quoteRail').clientWidth * .85, behavior: reduced() ? 'auto' : 'smooth' }));
+  $('#quoteNext').addEventListener('click', () => $('#quoteRail').scrollBy({ left: $('#quoteRail').clientWidth * .85, behavior: reduced() ? 'auto' : 'smooth' }));
+
   /* ---------- 進場 ---------- */
-  $$('.sec-title, .line-wrap, .svc-list, .qa-list, .book > *, .cover-text').forEach((el) => el.classList.add('reveal'));
+
   const reveals = $$('.reveal');
   if ('IntersectionObserver' in window) {
     const io = new IntersectionObserver((entries) => entries.forEach((en) => {
