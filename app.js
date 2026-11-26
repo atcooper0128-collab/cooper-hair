@@ -48,7 +48,7 @@
     document.documentElement.classList.add('locked');
     $('#closePhoto').focus();
   }
-  grid.addEventListener('click', event => {
+  document.addEventListener('click', event => {
     const button = event.target.closest('[data-work]');
     if (button) openPhoto(button.dataset.work, button);
   });
