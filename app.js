@@ -87,4 +87,47 @@
     opener?.focus({preventScroll:true});
   });
   dialog.addEventListener('click', event => { if (event.target === dialog) dialog.close(); });
+
+  // Quiet motion preview; pause when offscreen and respect reduced-motion preferences.
+  const video = $('#heroVideo');
+  const toggle = $('#videoToggle');
+  if (video && toggle) {
+    const motion = matchMedia('(prefers-reduced-motion: reduce)');
+    let manuallyPaused = motion.matches;
+    let inView = false;
+    video.muted = true;
+    video.controls = false;
+    toggle.hidden = false;
+    function syncVideoButton() {
+      toggle.textContent = video.paused ? '播放影片' : '暫停影片';
+      toggle.setAttribute('aria-label', video.paused ? '播放風格示意影片' : '暫停風格示意影片');
+    }
+    function updatePlayback() {
+      if (inView && !manuallyPaused && !document.hidden) {
+        video.play().catch(syncVideoButton);
+      } else video.pause();
+    }
+    toggle.addEventListener('click', () => {
+      manuallyPaused = !video.paused;
+      if (manuallyPaused) video.pause();
+      else video.play().catch(syncVideoButton);
+    });
+    video.addEventListener('play', syncVideoButton);
+    video.addEventListener('pause', syncVideoButton);
+    video.addEventListener('error', () => {
+      toggle.textContent = '影片暫時無法播放';
+      toggle.disabled = true;
+    });
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(entries => {
+        inView = entries[0].isIntersecting;
+        updatePlayback();
+      }, {threshold:0.3}).observe(video);
+    } else { inView = true; updatePlayback(); }
+    document.addEventListener('visibilitychange', updatePlayback);
+    motion.addEventListener('change', event => {
+      if (event.matches) { manuallyPaused = true; updatePlayback(); }
+    });
+    syncVideoButton();
+  }
 })();
